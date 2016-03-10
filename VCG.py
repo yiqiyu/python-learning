@@ -33,7 +33,8 @@ class VCG(object):
            return 1
            
     def determine(self,x):
-        if (self.relate_sum(x,0)-self.relate_sum(x,1))*(self._sum[0]-self._sum[1])<0:
+        if (self.relate_sum(x,0)-self.relate_sum(x,1))*\
+        (self._sum[0]-self._sum[1])<0:
             return True
         else:
             return False
@@ -48,14 +49,15 @@ class VCG(object):
             print "%d pays %d" % (i[0],i[1])
         return
         
-    def __str__(self):
-        return "We decided to pick choice no.%d " % (self.decision()+1)
+    def get_decision(self):
+        print "We decided to pick choice no.%d " % (self.decision()+1)
+        return
         
 
 def calculate_input():
     form=[[10,30],[30,10],[15,20],[25,10]]
     new=VCG(form)
-    print new
+    new.get_decision()
     new.tax()
     
 if __name__=='__main__':
