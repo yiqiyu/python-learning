@@ -24,7 +24,7 @@ class SqList:
             raise ListException("Sqlist Error")
         return self.data[loc-1]
     
-    #按位置插入元素
+    #按位置之后插入元素
     def ListInsert(self, item, loc):
         if loc>self.max:
             raise ListException("List is Full")
@@ -100,10 +100,7 @@ class LinkedList:
             raise ListException("Input Error")
         item=self.search(loc-1)
         deleted=item.next.cargo
-        if loc==1:
-            item.next=None
-        else:
-            item.next=item.next.next  
+        item.next=item.next.next  
         self.length=self.length-1
         return deleted
 
@@ -127,14 +124,31 @@ class DoubleNode(Node):
         self.prior=prior
         
 #双向链表
-class DoubleList(LinkedList):
+class DoubleList(CircularList):
     def __init__(self):
         LinkedList.__int__(self)
         self.prior=self
-        self.next
         
     def Append(self, node):
         LinkedList.Append(self, node)
         self.prior=node
         
-    def 
+    def ListInsert(self, loc, node):
+        if loc<1 or (not type(loc)==int):
+            raise ListException("Input Error")
+        item=self.search(loc)
+        node.next=item.next
+        node.prior=item
+        item.next.prior=node
+        item.next=node
+        self.length=self.length+1
+    
+    def ListDelete(self, loc):
+        if loc<1 or (not type(loc)==int):
+            raise ListException("Input Error")
+        item=self.search(loc-1)
+        deleted=item.next.cargo
+        item.next.next.prior=item
+        item.next=item.next.next  
+        self.length=self.length-1
+        return deleted
