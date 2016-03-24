@@ -30,12 +30,7 @@ class SqList:
             raise ListException("List is Full")
         if loc<1 or loc>self.length or (not type(loc)==int):
             raise ListException("Sqlist Error")
-        if not loc==self.length:
-            i=self.length-1
-            while i>loc-1:
-                self.data[i+1]=self.data[i]
-                i=i-1
-        self.data[loc-1]=item
+        self.data.insert(loc, item)
         self.length=self.length+1
         return
     
@@ -126,7 +121,7 @@ class DoubleNode(Node):
 #双向链表
 class DoubleList(CircularList):
     def __init__(self):
-        LinkedList.__int__(self)
+        CircularList.__init__(self)
         self.prior=self
         
     def Append(self, node):
