@@ -2,7 +2,9 @@
 """
 Created on Fri Mar 18 21:33:49 2016
 
-@author: Administrator
+@author: Yiqi Yu
+
+栈及其方法的实现，包括顺序栈和链栈，队列
 """
 from list import Node
 
