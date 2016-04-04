@@ -115,21 +115,21 @@ def ForestToTree(*forest):
 
 def HuffmanTreeCreate(nlist):
     nlist.sort(reverse=True)
-    tweigh=None
+    NewWeigh=None
     for i in range(len(nlist)):
         e=nlist.pop()
-        if not tweigh:
-            troot=BiTreeNode(e[0])
-            tweigh=e[1]
+        if not NewWeigh:
+            NewRoot=BiTreeNode(e[0])
+            NewWeigh=e[1]
             continue
-        if e[0]<tweigh:
+        if e[0]<NewWeigh:
             nl=BiTreeNode(e[0])
-            tweigh=tweigh+e[1]
-            troot=BiTreeNode(tweigh,nl,troot)
+            NewWeigh=NewWeigh+e[1]
+            NewRoot=BiTreeNode(NewWeigh,nl,NewRoot)
         else:
             nr=BiTreeNode(e[0])
-            tweigh=tweigh+e[1]
-            troot=BiTreeNode(tweigh,troot,nr)
-    return troot
+            NewWeigh=NewWeigh+e[1]
+            NewRoot=BiTreeNode(NewWeigh,NewRoot,nr)
+    return NewRoot
     
         
