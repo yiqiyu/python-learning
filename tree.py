@@ -12,7 +12,8 @@ Created on Thu Mar 31 19:21:21 2016
 class TreeException(Exception):
     pass
 
-class BiTreeNode:
+
+class BiTreeNode(object):
     """
     二叉树节点的定义
     """
@@ -30,6 +31,7 @@ class BiTree(BiTreeNode):
     二叉树根节点的定义
     """
     pass
+
 
 import functools
 
@@ -95,7 +97,8 @@ def CreateBiTree(node):
         node=BiTreeNode(ch)
         CreateBiTree(node.left)
         CreateBiTree(node.right)
-        
+ 
+       
 class BiTreadTreeNode(BiTreeNode):
     """
     线索二叉树节点定义
@@ -103,8 +106,8 @@ class BiTreadTreeNode(BiTreeNode):
     def __init__(self, cargo, left=None, right=None):
         BiTreeNode.__init__(cargo, left=None, right=None)
         #比一般二叉树节点多出两个标签，‘link’表示孩子指向节点，‘thread’表示孩子指向前驱或后继
-        self.ltag='link'
-        self.rtag='link'
+        self.ltag = 'link'
+        self.rtag = 'link'
         
 class BiTreadTree(BiTreadTreeNode):
     """
@@ -118,7 +121,7 @@ def InTreading(node):
     线索二叉树线索化
     """
     #前驱储存为pre
-    pre=[node]
+    pre = [node]
     #迭代操作另外定义
     _InTreading(node, pre)
    
@@ -126,77 +129,81 @@ def _InTreading(node, pre):
     """
     线索二叉树线索化迭代部分，中序遍历实现
     """
-    precur=pre.pop()
-    if node!=None:
+    precur = pre.pop()
+    if node != None:
         _InTreading(node.left, pre)
         #叶子节点左孩子改为线索，指向前驱
-        if node.left==None:
-            node.ltag="thread"
-            node.left=precur
+        if node.left == None:
+            node.ltag = "thread"
+            node.left = precur
         #前驱的后继指向本叶子节点
-        if precur.right==None:
-            precur.rtag="thread"
-            precur.right=node
+        if precur.right == None:
+            precur.rtag = "thread"
+            precur.right = node
         #更新前驱位置为本节点
         pre.append(node)
         _InTreading(node.right, pre)
-
 
 @TypeCheck(BiTreadTreeNode, BiTreadTree)                
 def InOrderTraverse_Thr(node):
     """
     线索二叉树线索化后的中序遍历
     """
-    T=node.left
-    while T!=node:
-        while T.ltag=='link':
-            T=T.left
+    T = node.left
+    while T != node:
+        while T.ltag == 'link':
+            T = T.left
         print T.cargo
         #到了叶子节点，改为寻找后继
-        while T.rtag=='thread' and T.right!=node:
-            T=T.right
+        while T.rtag == 'thread' and T.right != node:
+            T = T.right
             print T.cargo
         #左孩子遍历完毕，改为右孩子
-        T=T.right
+        T = T.right
  
       
 def ForestToTree(*forest):
     """
-    二叉树森林合成为一个二叉树，参数个数不限，参数为以孩子兄弟表示法表示的一般树 
+    二叉树森林合成为一个二叉树。
+    参数个数不限，参数为以孩子兄弟表示法表示的一般树。
     """
-    t=forest[0]
+    t = forest[0]
     #新树会被加在上一棵树的右孩子
     for tree in forest:
-        if t==tree:
+        if t == tree:
             continue
-        t.right=tree
-        t=tree
+        t.right = tree
+        t = tree
+
 
 def HuffmanTreeCreate(nlist):
     """
-    赫夫曼标码实现函数，nlist为节点表，节点以元组表示，元组第一个元素为内容，第二个元素为权
+    赫夫曼标码实现函数。
+    nlist为节点表，节点以元组表示，元组第一个元素为内容，第二个元素为权。
+    返回一个树根节点
     """
     #按权降序排列节点
     nlist.sort(key=lambda x:x[1], reverse=True)
-    NewWeigh=None
+    NewWeigh = None
     for i in range(len(nlist)):
-        e=nlist.pop()
+        e = nlist.pop()
         #若尚未赋予权值，则需再弹出一个节点
         if not NewWeigh:
             #已弹出的节点生成一个树节点
-            NewRoot=BiTreeNode(e[0])
-            NewWeigh=e[1]
+            NewRoot = BiTreeNode(e[0])
+            NewWeigh = e[1]
             continue
         #旧树与新节点权值比较，将两者权值较大的放右边，生成一棵新树，权为两者相加
-        if e[1]<NewWeigh:
-            NewNode=BiTreeNode(e[0])
-            NewWeigh=NewWeigh+e[1]
-            NewRoot=BiTreeNode(NewWeigh,NewNode,NewRoot)
+        if e[1] < NewWeigh:
+            NewNode = BiTreeNode(e[0])
+            NewWeigh = NewWeigh+e[1]
+            NewRoot = BiTreeNode(NewWeigh,NewNode,NewRoot)
         else:
-            NewNode=BiTreeNode(e[0])
-            NewWeigh=NewWeigh+e[1]
-            NewRoot=BiTreeNode(NewWeigh,NewRoot,NewNode)
+            NewNode = BiTreeNode(e[0])
+            NewWeigh = NewWeigh+e[1]
+            NewRoot = BiTreeNode(NewWeigh,NewRoot,NewNode)
     return NewRoot
+
     
 if __name__ == '__main__':
     import doctest
