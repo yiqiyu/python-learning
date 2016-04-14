@@ -42,10 +42,12 @@ class MGraph(object):
         参数digraph为零时，表示图为无向图，为1时则为有向图
         """
         self.vexs = vexs
-        numVertexes = len(self.vexs)
-        self.arc = [[INFINITY for col in range(numVertexes)] 
-                   for row in range(numVertexes)]
-        if numVertexes:
+        self.numVertexes = len(self.vexs)
+        self.arc = [[INFINITY for col in range(self.numVertexes)] 
+                   for row in range(self.numVertexes)]
+        for i in range(self.numVertexes)
+            self.arc[i][i] = 0
+        if self.numVertexes:
             for edges in arcs:
                 try:
                     self.arc[edges[0]][edges[1]] = edge[2]
@@ -55,7 +57,7 @@ class MGraph(object):
                 if not digraph:
                     #非有向图对称赋值
                     self.arc[edges[1]][edges[0]] = self.arc[edges[0]][edges[1]]
-        numEdges = len(self.arc)
+        self.numEdges = len(self.arc)
     
     @_Check
     def GetVex(self, u):
@@ -64,6 +66,12 @@ class MGraph(object):
     @_Check    
     def PutVex(self, v, value):
         self.vexs[v] = value
+        
+    @_Check  
+    def FirstAdjvex(self, v):
+        for i in range(self.numVertexes):
+            if self.vexs[v][i] != INFINITY and (self.vexs[v][i] != 0):
+                return i
 
 
 class EdgeNode(object):
@@ -77,7 +85,10 @@ class VertexNode(object):
         self.data=data
         self.firstedge=firstedge
      
-class GraphAdjList(object):
+class GraphAdjList(MGraph):
+    """
+    邻接表描述的图
+    """
     def __init__(self, vexs=[], arcs=[]):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
@@ -100,7 +111,8 @@ class GraphAdjList(object):
             except IndexError:
                 t = EdgeNode(arc[0])
             t.nextEdge = self.vexs(arc[1]).firstedge
-            self.vexs(arc[1]).firstedge = t     
+            self.vexs(arc[1]).firstedge = t    
+
 
 
 class OEdgeNode(object):
@@ -160,8 +172,6 @@ class GraphAdjListMulti(object):
         self.vexs = [VertexNode(x) for x in vexs]
         self.numVertexes = len(self.vexs)
         self.numEdges = len(arcs)
-        _match1 = [None]* self.numEdges
-        _match2 = [None]* self.numEdges
         _match = []
         for arc in arcs:
             try:
