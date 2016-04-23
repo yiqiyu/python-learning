@@ -17,10 +17,11 @@ class BiTreeNode(object):
     """
     二叉树节点的定义
     """
-    def __init__(self, cargo, left=None, right=None):
+    def __init__(self, cargo, left=None, right=None, weight=None):
         self.cargo = cargo
         self.left = left
         self.right = right
+        self.weight = weight
         
     def __str__(self):
         return str(self.cargo)
@@ -175,35 +176,34 @@ def ForestToTree(*forest):
         t.right = tree
         t = tree
 
+import copy
 
-def HuffmanTreeCreate(nlist):
+def HuffmanTreeCreate(List):
     """
     赫夫曼标码实现函数。
     nlist为节点表，节点以元组表示，元组第一个元素为内容，第二个元素为权。
     返回一个树根节点
     """
     #按权降序排列节点
+    nlist = copy.deepcopy(List)
     nlist.sort(key=lambda x:x[1], reverse=True)
+    #创建树数组
+    tlist = [BiTreeNode(n[0], weight=n[1]) for n in nlist]
     NewWeigh = None
-    for i in range(len(nlist)):
-        e = nlist.pop()
-        #若尚未赋予权值，则需再弹出一个节点
-        if not NewWeigh:
-            #已弹出的节点生成一个树节点
-            NewRoot = BiTreeNode(e[0])
-            NewWeigh = e[1]
-            continue
-        #旧树与新节点权值比较，将两者权值较大的放右边，生成一棵新树，权为两者相加
-        if e[1] < NewWeigh:
-            NewNode = BiTreeNode(e[0])
-            NewWeigh = NewWeigh+e[1]
-            NewRoot = BiTreeNode(NewWeigh,NewNode,NewRoot)
-        else:
-            NewNode = BiTreeNode(e[0])
-            NewWeigh = NewWeigh+e[1]
-            NewRoot = BiTreeNode(NewWeigh,NewRoot,NewNode)
-    return NewRoot
-
+    MaxTime = len(nlist)
+    for i in range(MaxTime):
+        e1 = tlist.pop()
+        e2 = tlist.pop()
+        NewWeigh = e2.weight+e1.weight
+        NewRoot = BiTreeNode(NewWeigh,e1,e2)
+        j = -1
+        #将新树节点从末端插入正确位置
+        while True:
+            if tlist[j].weight > NewRoot.weight:
+                tlist[(j+1):(j+1)] = [NewRoot]
+                break
+            j -= 1
+    return tlist.pop()
     
 if __name__ == '__main__':
     import doctest

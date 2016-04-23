@@ -6,7 +6,6 @@ Created on Fri Mar 18 21:33:49 2016
 
 栈及其方法的实现，包括顺序栈和链栈，队列
 """
-from list import Node
 
 class StackException(Exception):
     pass
@@ -58,23 +57,31 @@ class SqQueue:
         self.max=Max
         self.front=0
         self.rear=0
-        self.length=0
         
     def QueueLength(self):
         return (self.rear-self.front+self.max)%self.max
         
     def EnQueue(self, item):
+        """
+        入队操作
+        """
         if self.QueueLength()==self.max:
             raise QueueException("Stack is full")
         self.data[self.rear]=item
         self.rear=(self.rear+1)%self.max
 
     def DeQueue(self):
+        """
+        出队操作
+        """
         if self.front==self.rear:
             raise QueueException("Stack is empty")
         result=self.data[self.front]
         self.front=(self.front+1)%self.max
         return result
+        
+    def QueueEmpty(self):
+        return self.QueueLength() == 0
      
 class LinkedQueue:
     def __init__(self):
