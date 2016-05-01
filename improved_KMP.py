@@ -11,7 +11,7 @@ def nextval(string):
     MainI=1     #后缀序数
     SubI=0      #前缀序数
     l=len(string)   #串长
-    nextlist=[0]    #next表，首位为0
+    nextlist=[0 for i in range(l)]    #next表，首位为0
     while MainI<l:
         if string[SubI]==string[MainI]:
             #字符相等则继续
@@ -29,7 +29,9 @@ def nextval(string):
     return nextlist
 
 def KMPMatch(MainStr, Target, Pos): 
-#输入主串，目标和初始位置，如果存在目标串则返回第一次出现的位置，否则返回False
+    """
+    输入主串，目标和初始位置，如果存在目标串则返回第一次出现的位置，否则返回False
+    """
     nextlist=nextval(Target)
     ls=len(MainStr)   #主串的长度
     lt=len(Target)    #目标串的长度

@@ -200,6 +200,9 @@ class EdgeSetNode(object):
         self.begin = begin
         self.end = end
         self.weight = weight
+        
+    def __str__(self):
+        return "(%d, %d, weight:%d)" % (self.begin, self.end, self.weight)
             
 class EdgeSetArray(object):
     def __init__(self, vexs=[], arcs=[]):
@@ -213,6 +216,18 @@ class EdgeSetArray(object):
             self.arcs = [EdgeSetNode(x[0], x[1], x[2]) for x in arcs]
         except IndexError:
             self.arcs = [EdgeSetNode(x[0], x[1], 1) for x in arcs]
+        self.numVertexes = len(self.vexs)
+            
+    def MConvert(self, Graph):
+        """
+        矩阵描述的图转化成边集数组并按权值从小到大排序
+        """
+        self.vexs = Graph.vexs
+        for i in range(Graph.numVertexes):
+            for j in range(Graph.numVertexes):
+                if Graph.arcs[i][j] and Graph.arcs[i][j] != INFINITY:
+                    self.arcs.append(EdgeSetNode(i,j,Graph.arcs[i][j]))
+        self.arcs.sort(key= lambda x: x.weight)
             
 
 def DFS(Graph):
@@ -256,7 +271,7 @@ def BFS_L(Graph):
     """
     广度优先遍历迭代部分，输入为邻接表描述的图
     """  
-    queue = stack.SqQueue(Graph.numVextexs)
+    queue = stack.SqQueue(Graph.numVertexes)
     visited = [False for i in range(Graph.numVertexes)]
     for i in range(Graph.numVextexs):
         if not visited[i]:
@@ -278,10 +293,11 @@ def BFS_L(Graph):
 def BFS_M(Graph):
     """
     广度优先遍历迭代部分，输入为邻接表描述的图
+    顶点数据逐个打印
     """  
     queue = stack.SqQueue(Graph.numVextexs)
     visited = [False for i in range(Graph.numVertexes)]
-    for i in range(Graph.numVextexs):
+    for i in range(Graph.numVertexes):
         if not visited[i]:
             #头顶点入队
             visited[i] = True
@@ -290,10 +306,102 @@ def BFS_M(Graph):
         while not queue.QueueEmpty():
             #出队
             p = queue.DeQueue()
-            for j in range(Graph.numVextexs):
+            for j in range(Graph.numVertexes):
                 if Graph.arcs[p][j] != INFINITY and (not visited[j]):
                     #相邻顶点入队
                     visited[j] = True
                     print Graph.vexs[j].data
                     queue.EnQueue(j)
+                    
+def MST_Prim(Graph):
+    """
+    Prim算法实现的最小生成树函数，输入为邻接矩阵描述的图，权值为正
+    输出为边集合
+    """
+#    AdjVex的值为树的边缘结点，下标与值表示两个顶点相连为权最小路径
+    AdjVex = [0 for i in range(Graph.numVertexes)]
+    LowCost = [i for i in Graph.arcs[0]]
+    low = INFINITY
+    for j in range(Graph.numVertexes):
+        for i in range(Graph.numVertexes):
+            if LowCost[i] and LowCost[i]<low:
+                low = LowCost[i]
+                NewVex = i
+        print (AdjVex[NewVex], NewVex)
+        LowCost[NewVex] = 0
+        for i in range(Graph.numVertexes):
+            if Graph.arcs[NewVex][i] < LowCost[i]:
+                LowCost[i] = Graph.arcs[NewVex]
+                AdjVex[i] = NewVex
+ 
+def MST_Kruskal(Graph):
+    """
+    Kruskal算法实现的最小生成树函数，输入为邻接矩阵描述的图，权值为正
+    输出为边集合
+    """
+    G = EdgeSetArray()
+    G.MConvert(Graph)
+    parent = [0 for i in G.numVertexes]
+    for i in range(G.numVertexes):
+        n = Find(parent, G.arcs[i].begin)
+        m = Find(parent, G.arcs[i].end)
+        if n != m:
+            print G.arcs[i]
+            parent[n] = m
+            
+def Find(parent, num):
+    """
+    回溯生成树的根节点
+    输入parent表和节点下标，返回节点的根节点值
+    """
+    while parent[num] > 0:
+        num = parent[num]
+    return num
 
+class SP_Dijkstra(object):
+    """
+    Dijkstra算法实现的最短路径生成函数
+    """
+    def __init__(self, Graph, vex0):
+        self.begin = vex0
+        self.visited = self.PathM = [0 for i in Graph.numVertexes]
+        self.lowcost = [i for i in Graph.arcs[vex0]]
+        self.visited[vex0] = 1
+        for i in range(Graph.numVertexes):
+            low = INFINITY
+            for j in range(Graph.numVertexes):
+                if not self.visited[j] and self.lowcost[j] < low:
+                    NewVex = j
+                    low = self.lowcost[j]
+                self.visited[NewVex] = 1
+            for j in range(Graph.numVertexes):
+                if not self.visited[j] and (low+
+                Graph.arcs[NewVex][j] < self.lowcost[j]):
+                    self.lowcost[j] = low+Graph.arcs[NewVex][j]
+                    self.PathM[j] = NewVex
+                    
+    def output(self, end):
+        line = []
+        t = end
+        while t != self.begin:
+            line.append((t, self.PathM[t]))
+            t = self.PathM[t]
+        for i in len(line):
+            print line.pop()
+            
+
+class SP_Floyd(object):
+    """
+    Floyd算法实现的最短路径生成函数
+    """
+    def __init__(self, Graph):
+        self.PathM = [0 for i in range(Graph.numVertexes)]
+        self.lowcost = [i for i in Graph.arcs]
+        for i in range(Graph.numVertexes):
+            for j in range(Graph.numVertexes):
+                for k in range(Graph.numVertexes):
+                    if self.lowcost[j][k] > (self.lowcost[j][i]+
+                                             self.lowcost[i][k]):
+                        self.lowcost[j][k] = (self.lowcost[j][i]+
+                                              self.lowcost[i][k])
+                        self.PathM[j][k] = self.PathM[k][i]
