@@ -133,6 +133,9 @@ class OVertexNode(object):
         self.firstout = firstout
 
 class OrthogonalList(object):
+    """
+    十字链表
+    """
     def __init__(self, vexs=[], arcs=[]):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
@@ -165,6 +168,9 @@ class MEdgeNode(object):
         self.visit = 0
 
 class GraphAdjListMulti(object):
+    """
+    多重邻接表
+    """
     def __init__(self, vexs=[], arcs=[]):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
@@ -205,6 +211,9 @@ class EdgeSetNode(object):
         return "(%d, %d, weight:%d)" % (self.begin, self.end, self.weight)
             
 class EdgeSetArray(object):
+    """
+    边集数组
+    """
     def __init__(self, vexs=[], arcs=[]):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
@@ -395,7 +404,9 @@ class SP_Floyd(object):
     Floyd算法实现的最短路径生成函数
     """
     def __init__(self, Graph):
-        self.PathM = [0 for i in range(Graph.numVertexes)]
+        self.l = Graph.numVertexes
+        self.PathM = [[i for i in range(Graph.numVertexes)] 
+                        for i in range(Graph.numVertexes)]
         self.lowcost = [i for i in Graph.arcs]
         for i in range(Graph.numVertexes):
             for j in range(Graph.numVertexes):
@@ -405,3 +416,92 @@ class SP_Floyd(object):
                         self.lowcost[j][k] = (self.lowcost[j][i]+
                                               self.lowcost[i][k])
                         self.PathM[j][k] = self.PathM[k][i]
+                        
+    def PrintPath(self, begin, end):
+        t =  self.PathM[begin][end]
+        print '%d - %d path: %d' % (begin, end, t)
+        while t != end:
+            t = self.PathM[t][end]
+            print "->"+t
+        print "weight: "+self.lowcost[begin][end]
+        
+
+class TopologicalSort(object):
+    """
+    拓扑排序算法实现
+    """
+    Stack2 = []
+    def __init__(self, LGraph, etv=[]):
+        import copy
+        Graph = copy.deepcopy(LGraph)
+        count = 0
+        #为图的顶点数组数据加上入度
+        for vex in Graph.vexs:
+            vex.ind = 0
+        for vex in Graph.vexs:
+            t = vex.firstedge
+            Graph.vexs[t.adjvex].ind += 1
+            while t.nextedge:
+                Graph.vexs[t.adjvex].ind += 1
+                t = t.nextedge
+        Stack = []
+        #一开始，入度为零的入栈
+        for i in Graph.numVertexes:
+            if Graph.vexs[i].ind == 0:
+                Stack.append[(Graph.vexs[i], i)]
+        while Stack:
+            t = Stack.pop()
+            self.Stack2.append(t[1])
+            count += 1
+            tt = t[0].firstedge
+            pre = t[1]
+            while tt:
+                #去掉该顶点上的出边
+                Graph.vexs[tt.adjvex].ind -= 1
+                #同时判断是否有顶点入度为零，为零则入栈
+                if not Graph.vexs[tt.adjvex].ind:
+                    Stack.append[tt.adjvex]
+                if etv:
+                    #同一弧头中权最大的弧决定了事件最早开始时间
+                    if etv[pre]+tt.weigth > etv[tt.adjvex]:
+                        etv[tt.adjvex] = etv[pre]+tt.weigth            
+                tt = tt.next
+        if count < Graph.numVertexes:
+            return "Error!"
+        else:
+            return "OK!"
+        
+    def output(self):
+        if self.Stack2:
+            for i in len(self.Stack2):
+                print ("%d ->" % self.Stack2[i]),
+        else:
+            print "Error!"
+            
+
+def CriticalPath(Graph):
+    """
+    关键路径的算法实现
+    """
+    etv = [0 for i in range(Graph.numVertexes)]
+    r = TopologicalSort(Graph, etv)
+    ltv = [etv[Graph.numVertexes-1] for i in range(Graph.numVertexes)]
+    while not r.Stack2:
+        gettop = r.Stack2.pop()
+        e = Graph.vexs[gettop].firstedge
+        while e:
+            k = e.adjvex
+            if ltv[k]-e.weight < ltv[gettop]:
+                ltv[gettop] = ltv[k]-e.weight
+    for i in range(Graph.numVertexes):
+        e = Graph.vexs[i].firstedge
+        while e:
+            k = e.adjvex
+            ete = etv[i]
+            lte = ltv[k]-e.weight
+            if ete == lte:
+                print "<v%d, v%d> length: %d" % (Graph.vexs[i].data, Graph.vexs[k].data,
+                                                 e.weight)
+                
+        
+        
