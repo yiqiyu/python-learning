@@ -50,6 +50,7 @@ def TypeCheck(ctype1, ctype2):
         return wrapper
     return decorator
 
+
 @TypeCheck(BiTreeNode, BiTree)
 def PreOrderTraverse(node):
     """

@@ -10,6 +10,7 @@ Created on Fri Mar 18 21:33:49 2016
 class StackException(Exception):
     pass
 
+
 class SqStack:
     def __init__(self, Max):
         self.data=[]
@@ -29,6 +30,7 @@ class SqStack:
             self.top=self.top-1
         else:
             raise StackException("Stack is empty")
+
             
 class LinkedStack:
     def __init__(self):
@@ -41,15 +43,17 @@ class LinkedStack:
         self.length+=1
         
     def Pop(self):
-        if self.length==0:
+        if self.length == 0:
             raise StackException("Stack is empty")
         result=self.top.cargo
         self.top=self.top.next
         self.length-=1
         return result
 
+
 class QueueException(Exception):
     pass
+
 
 class SqQueue:
     def __init__(self, Max):
@@ -65,7 +69,7 @@ class SqQueue:
         """
         入队操作
         """
-        if self.QueueLength()==self.max:
+        if self.QueueLength() == self.max:
             raise QueueException("Stack is full")
         self.data[self.rear]=item
         self.rear=(self.rear+1)%self.max
@@ -74,7 +78,7 @@ class SqQueue:
         """
         出队操作
         """
-        if self.front==self.rear:
+        if self.front == self.rear:
             raise QueueException("Stack is empty")
         result=self.data[self.front]
         self.front=(self.front+1)%self.max
@@ -82,6 +86,7 @@ class SqQueue:
         
     def QueueEmpty(self):
         return self.QueueLength() == 0
+
      
 class LinkedQueue:
     def __init__(self):
@@ -95,7 +100,7 @@ class LinkedQueue:
         self.length+=1
         
     def DeQueue(self):
-        if self.length==0:
+        if self.length == 0:
             raise StackException("Stack is empty")
         result=self.front.cargo
         self.front=self.front.next

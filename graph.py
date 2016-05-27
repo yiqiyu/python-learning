@@ -16,7 +16,7 @@ class GraphException(Exception):
 
 import functools
 
-def _Check(func):
+def _CheckIndex(func):
     """
     类方法的装饰器，判断输入的下标是否超出。
     否则将抛出异常
@@ -34,13 +34,15 @@ class MGraph(object):
     """
     邻接矩阵描述的图
     """
-    def __init__(self, vexs=[], arcs=[], digraph=0):
+    def __init__(self, vexs=None, arcs=None, digraph=0):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
         由边的下标编号组成如（1,2），表示由v1与v2组成的边
         或（1,2,3），表示由v1与v2组成的边，权值为3
         参数digraph为零时，表示图为无向图，为1时则为有向图
         """
+        if vexs is None: vexs = []
+        if arcs is None: arcs = []
         self.vexs = vexs
         self.numVertexes = len(self.vexs)
         self.arc = [[INFINITY for col in range(self.numVertexes)] 
@@ -59,15 +61,15 @@ class MGraph(object):
                     self.arc[edges[1]][edges[0]] = self.arc[edges[0]][edges[1]]
         self.numEdges = len(self.arc)
     
-    @_Check
+    @_CheckIndex
     def GetVex(self, u):
         return self.vexs[u]
     
-    @_Check    
+    @_CheckIndex    
     def PutVex(self, v, value):
         self.vexs[v] = value
         
-    @_Check  
+    @_CheckIndex  
     def FirstAdjvex(self, v):
         for i in range(self.numVertexes):
             if self.arcs[v][i] != INFINITY and self.arcs[v][i] != 0:
@@ -89,12 +91,14 @@ class GraphAdjList(MGraph):
     """
     邻接表描述的图
     """
-    def __init__(self, vexs=[], arcs=[]):
+    def __init__(self, vexs=None, arcs=None):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
         由边的下标编号组成如（1,2），表示由v1与v2组成的边
         或（1,2,3），表示由v1与v2组成的边，权值为3
         """
+        if vexs is None: vexs = []
+        if arcs is None: arcs = []
         self.vexs = [VertexNode(x) for x in vexs]
         self.numVertexes = len(self.vexs)
         self.numEdges = len(arcs)
@@ -136,12 +140,14 @@ class OrthogonalList(object):
     """
     十字链表
     """
-    def __init__(self, vexs=[], arcs=[]):
+    def __init__(self, vexs=None, arcs=None):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
         由边的下标编号组成如（1,2），表示由v1与v2组成的边
         或（1,2,3），表示由v1与v2组成的边，权值为3
         """
+        if vexs is None: vexs = []
+        if arcs is None: arcs = []
         self.vexs = [OVertexNode(x) for x in vexs]
         self.numVertexes = len(self.vexs)
         self.numEdges = len(arcs)
@@ -171,12 +177,14 @@ class GraphAdjListMulti(object):
     """
     多重邻接表
     """
-    def __init__(self, vexs=[], arcs=[]):
+    def __init__(self, vexs=None, arcs=None):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
         由边的下标编号组成如（1,2），表示由v1与v2组成的边
         或（1,2,3），表示由v1与v2组成的边，权值为3
         """
+        if vexs is None: vexs = []
+        if arcs is None: arcs = []
         self.vexs = [VertexNode(x) for x in vexs]
         self.numVertexes = len(self.vexs)
         self.numEdges = len(arcs)
@@ -214,12 +222,14 @@ class EdgeSetArray(object):
     """
     边集数组
     """
-    def __init__(self, vexs=[], arcs=[]):
+    def __init__(self, vexs=None, arcs=None):
         """
         图初始化，vexs输入一个一位数组，arcs为元组数组，每个元组代表
         由边的下标编号组成如（1,2），表示由v1与v2组成的边
         或（1,2,3），表示由v1与v2组成的边，权值为3
         """
+        if vexs is None: vexs = []
+        if arcs is None: arcs = []
         self.vexs = vexs
         try: 
             self.arcs = [EdgeSetNode(x[0], x[1], x[2]) for x in arcs]
@@ -431,7 +441,8 @@ class TopologicalSort(object):
     拓扑排序算法实现
     """
     Stack2 = []
-    def __init__(self, LGraph, etv=[]):
+    def __init__(self, LGraph, etv=None):
+        etv = [] if etv is None else etv
         import copy
         Graph = copy.deepcopy(LGraph)
         count = 0
