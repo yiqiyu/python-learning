@@ -8,6 +8,9 @@ Created on Tue May 17 22:37:00 2016
 import tree
 
 def SearchBST(TreeNode, key, parent=None):
+    """
+    二叉搜索树的查找操作，输入为树节点和关键字
+    """
     if not TreeNode:
         print False
         return parent
@@ -21,6 +24,9 @@ def SearchBST(TreeNode, key, parent=None):
 
         
 def InsertBST(TreeNode, key):
+    """
+    二叉搜索树的插入操作，输入为树节点和关键字
+    """
     result = SearchBST(TreeNode, key)[0].cargo
     if result < key:
         result.right = tree.BiTreeNode(key)
@@ -31,18 +37,30 @@ def InsertBST(TreeNode, key):
 
         
 def DeleteBST(TreeNode, key):
+    """
+    二叉搜索树的删除操作，输入为树节点和关键字
+    """
     try:    
         target,parent = SearchBST(TreeNode, key)
     except ValueError:
         print "Can't find the key!"
         return None
-    enum = {}
-    flag = "right" if parent.right == target else "left"
+    parentSideThatTargetTook = {"right": parent.right, "left": parent.left}
+    side = "right" if parent.right == target else "left"
     if target.right is None:
-        if  parent.right == target:  
-            parent.right = target.left
-        elif parent.left == target:
-            parent.left == target.left
+        parentSideThatTargetTook[side] = target.left
     elif target.left is None:
+        parentSideThatTargetTook[side] = target.right
+    else:
+        rightmost = target.left
+        parent = target
+        while rightmost:
+            parent = rightmost
+            rightmost = rightmost.right
+        target.cargo = rightmost.cargo
+        if target.left == rightmost:
+            target.left = target.left.left
+        else:
+            parent.right = rightmost.left
         
         
