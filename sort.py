@@ -58,6 +58,40 @@ def _heapAdjust(array, currentRoot, currentRegion):
         currentRoot = child
         child *= 2
     array[currentRoot] = t
+    
+def MergeSort(array):
+    p = []
+    _mergeSort(array, 0, len(array)-1, p)
+    
+
+def _mergeSort(array, low, high, temp):
+    if low < high:
+        mid = (low+high)/2
+        _mergeSort(array, low, mid, temp)
+        _mergeSort(array, mid, high, temp)
+        _merge(array, low, mid, high)
+        
+
+def _merge(array, low, mid, high, sortedArray):
+    i = low
+    j = mid+1
+    m = high
+    n = mid
+    k = 0
+    while i < n and j < m:
+        if array[i] < array[j]:
+            sortedArray[k] = array[j]
+            k += 1
+            j += 1
+        else:
+            sortedArray[k] = array[i]
+            k += 1
+            j += 1
+    #比较剩下的直接插后面
+    if i < n:
+        sortedArray[k:] = array[i:n]
+    if j < m:
+        sortedArray[k:] = array[j:m]    
 
 
 def QuickSort(array):

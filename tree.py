@@ -8,6 +8,18 @@ Created on Thu Mar 31 19:21:21 2016
 
 """
 
+__all__ = ['BiTreeNode', 
+           'BiTree', 
+           'PreOrderTraverse',
+           'InOrderTraverse',
+           'PostOrderTraverse',
+           'CreateBiTree',
+           'BiTreadTreeNode',
+           'BiTreadTree',
+           'InOrderTraverse_Thr',
+           'ForestToTree',
+           'HuffmanTreeCreate']
+
 #树操作中的异常
 class TreeException(Exception):
     pass
@@ -110,12 +122,14 @@ class BiTreadTreeNode(BiTreeNode):
         #比一般二叉树节点多出两个标签，‘link’表示孩子指向节点，‘thread’表示孩子指向前驱或后继
         self.ltag = 'link'
         self.rtag = 'link'
+
         
 class BiTreadTree(BiTreadTreeNode):
     """
     线索二叉树根节点定义
     """
     pass
+
 
 @TypeCheck(BiTreadTreeNode, BiTreadTree)        
 def InTreading(node):
@@ -126,7 +140,8 @@ def InTreading(node):
     pre = [node]
     #迭代操作另外定义
     _InTreading(node, pre)
-   
+  
+
 def _InTreading(node, pre):
     """
     线索二叉树线索化迭代部分，中序遍历实现
@@ -145,6 +160,7 @@ def _InTreading(node, pre):
         #更新前驱位置为本节点
         pre.append(node)
         _InTreading(node.right, pre)
+
 
 @TypeCheck(BiTreadTreeNode, BiTreadTree)                
 def InOrderTraverse_Thr(node):
@@ -177,7 +193,9 @@ def ForestToTree(*forest):
         t.right = tree
         t = tree
 
+
 import copy
+
 
 def HuffmanTreeCreate(List):
     """
@@ -205,6 +223,7 @@ def HuffmanTreeCreate(List):
                 break
             j -= 1
     return tlist.pop()
+
     
 if __name__ == '__main__':
     import doctest
